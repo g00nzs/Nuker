@@ -1,99 +1,67 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
-import threading
 import requests
+import time
+import sys
 
-def delete_webhook():
-    webhook_url = webhook_entry.get()
-    if not webhook_url:
-        messagebox.showerror("Error", "Please enter a webhook URL")
-        return
-
-    if not is_valid_webhook(webhook_url):
-        messagebox.showerror("Error", "Invalid webhook URL")
-        return
-
-    try:
-        response = requests.delete(webhook_url)
-        if response.status_code == 204:
-            messagebox.showinfo("Success", "Webhook deleted successfully")
-        else:
-            messagebox.showerror("Error", f"Failed to delete webhook. Status code: {response.status_code}")
-    except Exception as e:
-        messagebox.showerror("Error", f"An error occurred: {str(e)}")
-
-def nuke_webhooks():
-    main_webhook_urls = webhook_entry.get()
-    extra_webhook_urls = [entry.get() for entry in extra_frame.grid_slaves() if isinstance(entry, ttk.Entry)]
-    
-    all_webhook_urls = main_webhook_urls + ',' + ','.join(extra_webhook_urls)
-
-    if not all_webhook_urls:
-        messagebox.showerror("Error", "Please enter webhook URLs")
-        return
-
-    webhook_urls = [url.strip() for url in all_webhook_urls.split(",")]
-
-    for url in webhook_urls:
-        if not is_valid_webhook(url):
-            messagebox.showerror("Error", f"Invalid webhook URL: {url}")
-            return
-
-    def send_request(webhook_url):
+def send_messages(webhook_url):
+    while True:
         try:
-            while True:
-                response = requests.post(webhook_url, json={"content": "@everyone u1pi nuker on top"})
-                if response.status_code == 204:
-                    print("Message sent successfully to", webhook_url)
-                else:
-                    print(f"Failed to send message to {webhook_url}. Status code: {response.status_code}")
+            response = requests.post(webhook_url, json={"content": "@everyone @here"})
+            response.raise_for_status()  
+            print("Message sent successfully.")
+            time.sleep(0.1)  
+        except requests.exceptions.HTTPError as err:
+            print(f"Failed to send message: {err}")
         except Exception as e:
-            print(f"An error occurred: {str(e)}")
+            print(f"An unexpected error occurred: {e}")
 
-    for url in webhook_urls:
-        threading.Thread(target=send_request, args=(url,), daemon=True).start()
+def delete_webhook(webhook_url):
+    response = requests.delete(webhook_url)
+    print(f"Response status code: {response.status_code}")
+    print(f"Response content: {response.text}")
+    if response.status_code == 204:
+        print("Webhook deleted successfully.")
+    else:
+        print(f"Failed to delete webhook. Status code: {response.status_code}")
+        print(f"Response content: {response.text}")
 
-    messagebox.showinfo("Success", "Webhook nuker started. Messages will be sent to all provided webhooks.")
+def main():
+    print("""
+███╗   ███╗ █████╗ ██████╗ ███████╗    ██████╗ ██╗   ██╗     ██████╗  ██████╗  ██████╗ ███╗   ██╗███████╗███████╗
+████╗ ████║██╔══██╗██╔══██╗██╔════╝    ██╔══██╗╚██╗ ██╔╝    ██╔════╝ ██╔═████╗██╔═████╗████╗  ██║╚══███╔╝██╔════╝
+██╔████╔██║███████║██║  ██║█████╗      ██████╔╝ ╚████╔╝     ██║  ███╗██║██╔██║██║██╔██║██╔██╗ ██║  ███╔╝ ███████╗
+██║╚██╔╝██║██╔══██║██║  ██║██╔══╝      ██╔══██╗  ╚██╔╝      ██║   ██║████╔╝██║████╔╝██║██║╚██╗██║ ███╔╝  ╚════██║
+██║ ╚═╝ ██║██║  ██║██████╔╝███████╗    ██████╔╝   ██║       ╚██████╔╝╚██████╔╝╚██████╔╝██║ ╚████║███████╗███████║
+╚═╝     ╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝    ╚═════╝    ╚═╝        ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚══════╝
+                                                                                                                 
+                                                                                                                                                                                                                                                                                                                                                     
+                                                        """)
+    print("\nWelcome to Webhook Manager! if you encounter any problems Dm me on discord: u1pi")
+    webhook_url = input("Enter the webhook URL: ")
+    
+    try:
+        response = requests.get(webhook_url)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as err:
+        print(f"Error: {err}")
+        print("Invalid webhook URL. Exiting.")
+        sys.exit(1)
 
-def add_webhook_entry():
-    new_webhook_entry = ttk.Entry(extra_frame, width=50)
-    new_webhook_entry.grid(column=0, row=len(extra_frame.grid_slaves()) + 1, padx=5, pady=5, sticky=(tk.W, tk.E))
+    print("\nChoose an action:")
+    print("1. Nuke webhook (Send @everyone messages)")
+    print("2. Delete webhook")
+    print("3. Exit")
 
-def is_valid_webhook(url):
+    choice = input("Enter your choice: ")
 
+    if choice == "1":
+        send_messages(webhook_url)
+    elif choice == "2":
+        delete_webhook(webhook_url)
+    elif choice == "3":
+        print("Exiting Nuker.")
+        sys.exit()
+    else:
+        print("Invalid choice. Please choose 1, 2, or 3.")
 
-
-root = tk.Tk()
-root.title("Nuker made by u1pi")
-
-style = ttk.Style()
-style.theme_use('clam')
-
-main_frame = ttk.Frame(root, padding="20")
-main_frame.grid(column=0, row=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
-
-webhook_label = ttk.Label(main_frame, text="Enter webhooks:")
-webhook_label.grid(column=0, row=0, sticky=tk.W)
-
-webhook_entry = ttk.Entry(main_frame, width=50)
-webhook_entry.grid(column=0, row=1, padx=5, pady=5, sticky=(tk.W, tk.E))
-
-add_webhook_button = ttk.Button(main_frame, text="Add Webhook", command=add_webhook_entry)
-add_webhook_button.grid(column=0, row=2, pady=5)
-
-nuke_button = ttk.Button(main_frame, text="Webhook Nuker (Works well)", command=nuke_webhooks)
-nuke_button.grid(column=0, row=3, pady=5)
-
-delete_button = ttk.Button(main_frame, text="Delete Webhook (Kinda broken)", command=delete_webhook)
-delete_button.grid(column=0, row=4, pady=5)
-
-extra_frame = ttk.Frame(root, padding="20")
-extra_frame.grid(column=0, row=1, sticky=(tk.W, tk.E))
-root.rowconfigure(1, weight=1)
-
-extra_label = ttk.Label(extra_frame, text="Extra Webhooks")
-extra_label.grid(column=0, row=0, pady=5)
-
-root.mainloop()
+if __name__ == "__main__":
+    main()
