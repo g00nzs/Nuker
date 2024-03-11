@@ -1,0 +1,30 @@
+Steps:
+Download the Script:
+
+Go to the GitHub repository.
+Click "Download ZIP" and extract the files.
+Install Python (if needed):
+
+If you don't have Python installed, download and install it from python.org.
+Run the Script:
+
+Open the extracted folder.
+Double-click nuker.py to run it.
+Follow the prompts in the terminal.
+Provide Webhook URL:
+
+Paste your Discord webhook URL when prompted.
+Choose Action:
+
+Press 1 to send mass messages.
+Press 2 to delete the webhook.
+Press 3 to exit.
+Provide Bot Details (if sending messages):
+
+Enter a username and a URL for the bot's profile picture.
+Execute Action:
+
+The script will start sending messages or delete the webhook based on your choice.
+Exit:
+
+Close the terminal window when you're done.
