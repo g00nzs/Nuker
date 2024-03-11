@@ -2,10 +2,14 @@ import requests
 import time
 import sys
 
-def send_messages(webhook_url):
+def send_messages(webhook_url, username, avatar_url):
     while True:
         try:
-            response = requests.post(webhook_url, json={"content": "@everyone @here"})
+            response = requests.post(webhook_url, json={
+                "content": "@everyone @here",
+                "username": username,
+                "avatar_url": avatar_url
+            })
             response.raise_for_status()  
             print("Message sent successfully.")
             time.sleep(0.1)  
@@ -26,16 +30,21 @@ def delete_webhook(webhook_url):
 
 def main():
     print("""
-███╗   ███╗ █████╗ ██████╗ ███████╗    ██████╗ ██╗   ██╗     ██████╗  ██████╗  ██████╗ ███╗   ██╗███████╗███████╗
-████╗ ████║██╔══██╗██╔══██╗██╔════╝    ██╔══██╗╚██╗ ██╔╝    ██╔════╝ ██╔═████╗██╔═████╗████╗  ██║╚══███╔╝██╔════╝
-██╔████╔██║███████║██║  ██║█████╗      ██████╔╝ ╚████╔╝     ██║  ███╗██║██╔██║██║██╔██║██╔██╗ ██║  ███╔╝ ███████╗
-██║╚██╔╝██║██╔══██║██║  ██║██╔══╝      ██╔══██╗  ╚██╔╝      ██║   ██║████╔╝██║████╔╝██║██║╚██╗██║ ███╔╝  ╚════██║
-██║ ╚═╝ ██║██║  ██║██████╔╝███████╗    ██████╔╝   ██║       ╚██████╔╝╚██████╔╝╚██████╔╝██║ ╚████║███████╗███████║
-╚═╝     ╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝    ╚═════╝    ╚═╝        ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚══════╝
+ ███▄ ▄███▓ ▄▄▄      ▓█████▄ ▓█████     ▄▄▄▄ ▓██   ██▓     ▄████  ▒█████   ▒█████   ███▄    █ ▒███████▒  ██████ 
+▓██▒▀█▀ ██▒▒████▄    ▒██▀ ██▌▓█   ▀    ▓█████▄▒██  ██▒    ██▒ ▀█▒▒██▒  ██▒▒██▒  ██▒ ██ ▀█   █ ▒ ▒ ▒ ▄▀░▒██    ▒ 
+▓██    ▓██░▒██  ▀█▄  ░██   █▌▒███      ▒██▒ ▄██▒██ ██░   ▒██░▄▄▄░▒██░  ██▒▒██░  ██▒▓██  ▀█ ██▒░ ▒ ▄▀▒░ ░ ▓██▄   
+▒██    ▒██ ░██▄▄▄▄██ ░▓█▄   ▌▒▓█  ▄    ▒██░█▀  ░ ▐██▓░   ░▓█  ██▓▒██   ██░▒██   ██░▓██▒  ▐▌██▒  ▄▀▒   ░  ▒   ██▒
+▒██▒   ░██▒ ▓█   ▓██▒░▒████▓ ░▒████▒   ░▓█  ▀█▓░ ██▒▓░   ░▒▓███▀▒░ ████▓▒░░ ████▓▒░▒██░   ▓██░▒███████▒▒██████▒▒
+░ ▒░   ░  ░ ▒▒   ▓▒█░ ▒▒▓  ▒ ░░ ▒░ ░   ░▒▓███▀▒ ██▒▒▒     ░▒   ▒ ░ ▒░▒░▒░ ░ ▒░▒░▒░ ░ ▒░   ▒ ▒ ░▒▒ ▓░▒░▒▒ ▒▓▒ ▒ ░
+░  ░      ░  ▒   ▒▒ ░ ░ ▒  ▒  ░ ░  ░   ▒░▒   ░▓██ ░▒░      ░   ░   ░ ▒ ▒░   ░ ▒ ▒░ ░ ░░   ░ ▒░░░▒ ▒ ░ ▒░ ░▒  ░ ░
+░      ░     ░   ▒    ░ ░  ░    ░       ░    ░▒ ▒ ░░     ░ ░   ░ ░ ░ ░ ▒  ░ ░ ░ ▒     ░   ░ ░ ░ ░ ░ ░ ░░  ░  ░  
+       ░         ░  ░   ░       ░  ░    ░     ░ ░              ░     ░ ░      ░ ░           ░   ░ ░          ░  
+                      ░                      ░░ ░                                             ░                 
                                                                                                                  
                                                                                                                                                                                                                                                                                                                                                      
                                                         """)
-    print("\nWelcome to Webhook Manager! if you encounter any problems Dm me on discord: u1pi")
+    print("\nMade with ❤️ by g00nzs - github.com/g00nzs")
+
     webhook_url = input("Enter the webhook URL: ")
     
     try:
@@ -47,15 +56,34 @@ def main():
         sys.exit(1)
 
     print("\nChoose an action:")
-    print("1. Nuke webhook (Send @everyone messages)")
-    print("2. Delete webhook")
-    print("3. Exit")
+    print("[1]. Nuke webhook ")
+    print("[2]. Delete webhook")
+    print("[3]. Exit")
 
     choice = input("Enter your choice: ")
 
     if choice == "1":
-        send_messages(webhook_url)
+        try:
+            response = requests.get(webhook_url)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
+            print("Invalid webhook URL. Exiting.")
+            sys.exit(1)
+        
+        username = input("Enter the username for the bot: ")
+        avatar_url = input("Enter the profile picture URL for the bot: ")
+        
+        send_messages(webhook_url, username, avatar_url)
     elif choice == "2":
+        try:
+            response = requests.get(webhook_url)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
+            print("Invalid webhook URL. Exiting.")
+            sys.exit(1)
+        
         delete_webhook(webhook_url)
     elif choice == "3":
         print("Exiting Nuker.")
