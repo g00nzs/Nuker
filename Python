@@ -6,7 +6,7 @@ def send_messages(webhook_url, username, avatar_url):
     while True:
         try:
             response = requests.post(webhook_url, json={
-                "content": "@everyone @here",
+                "content": "@everyone @here NUKED ASF <:01despisegengar:1215567182474252328>  ",
                 "username": username,
                 "avatar_url": avatar_url
             })
@@ -43,7 +43,7 @@ def main():
                                                                                                                  
                                                                                                                                                                                                                                                                                                                                                      
                                                         """)
-    print("\nMade with ❤️ by g00nzs - github.com/g00nzs")
+    print("\nScript fully made by g00nzs. - github.com/g00nzs")
 
     webhook_url = input("Enter the webhook URL: ")
     
@@ -92,4 +92,4 @@ def main():
         print("Invalid choice. Please choose 1, 2, or 3.")
 
 if __name__ == "__main__":
-    main()
+    main() 
