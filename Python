@@ -6,7 +6,7 @@ def send_messages(webhook_url, username, avatar_url):
     while True:
         try:
             response = requests.post(webhook_url, json={
-                "content": "@everyone @here NUKED ASF <:01despisegengar:1215567182474252328>  ",
+                "content": "@everyone @here NUKED ASF ",
                 "username": username,
                 "avatar_url": avatar_url
             })
